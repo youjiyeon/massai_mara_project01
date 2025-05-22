@@ -1,4 +1,4 @@
-name: massai mara park 01 gradle build
+name: massai mara park 01 multiple jobs
 
 on:
   workflow_dispatch
