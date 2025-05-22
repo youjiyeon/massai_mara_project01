@@ -26,7 +26,7 @@ jobs:
         run: ./gradlew clean build
 
       - name: list build/libs directory
-        run: ls -al ./build.libs
+        run: ls -al ./build/libs
 
       - name: run springboot application
         run: |
