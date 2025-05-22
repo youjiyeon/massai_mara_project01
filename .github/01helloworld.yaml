@@ -7,5 +7,5 @@ jobs:
   hello-world:
     runs-on: ubuntu-22.04
     steps:
-      - name: print hello message
+      - name: Print hello message
         run: echo "Hello, GitHub Actions!"
