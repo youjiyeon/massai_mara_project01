@@ -53,11 +53,11 @@ jobs:
            java -jar ./massai_mara_park-0.0.1-SNAPSHOT.jar &
            sleep 30 # stand by 30 sec
   
-  test:
-    name: test
-    needs: deploy
-    runs-on: ubuntu-22.04
-    steps:
+#  test:
+#    name: test
+#    needs: deploy
+#    runs-on: ubuntu-22.04
+#    steps:
       - name: run automated test #1
         run: |
           curl http://localhost:8080
