@@ -28,11 +28,14 @@ jobs:
 
                 ssh -vvv StrictHostKeyChecking=no \
                 -o "UserKnownHostsFile=/dev/null" \
-                -i ~/.ssh/ec2_.key -p 22 \ 
+                -i ~/.ssh/ec2_key -p 22 \ 
                 ${USER_NAME}@${HOSTNAME} '
 
                     echo "현재 사용자: $(whoami)"
                     echo "호스트명: $(hostname)"
+                    echo "현재시간: $(date)"
+                    echo "메모리사용량"
+                    free -h
                 '
 
                 echo "SSH 연결 테스트 끝..."
