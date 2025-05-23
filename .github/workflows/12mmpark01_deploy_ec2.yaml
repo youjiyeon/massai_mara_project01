@@ -60,59 +60,26 @@ jobs:
             echo "${{secrets.EC2_PRIVATEKEY}}" > ~/.ssh/ec2_key
             chmod 600 ~/.ssh/ec2_key
 
-      - name: upload JAR via SCP
+      - name: upload README.md via SCP
+        run: |          
+          scp -o StrictHostKeyChecking=no -o "UserKnownHostsFile=/dev/null" \
+          -i ~/.ssh/ec2_key -P 22 README.md \
+          ${{env.USER_NAME}}@${{env.HOSTNAME}}:~/README.md
+
+      - name: test SSH connect to ec2
         run: |
-          scp -i ~/.ssh/ec2_key \
-          -o "StrictHostKeyChecking=no" \
-          -o "UserKnownHostsFile=/dev/null" \ 
-          -P 22 *SNAPSHOT.jar ${{env.USER_NAME}}@${{env.HOSTNAME}}:~/
+            echo "SSH 연결 테스트 시작..."
+
+            ssh -o "StrictHostKeyChecking=no" \
+            -o "UserKnownHostsFile=/dev/null" \
+            -i ~/.ssh/ec2_key -p 22 \ 
+            ${{env.USER_NAME}}@${{env.HOSTNAME}} '
+
+                nohap java jar ./massai_mara_park-0.0.1-SNAPSHOT.jar \
+                  > app.log 2>&1 < /dev/null &
+            '
 
       - name: cleanup private key
         if: always()
         run: |
           rm -f ~/.ssh/ec2.key
-
-          deploy_ec2:
-            needs: build_jar
-            name: JAR upload to EC2
-            runs-on: ubuntu-22.04
-        
-            steps:
-              - name: download JAR artifact
-                uses: actions/download-artifact@v4
-                with: 
-                  name: application.jar
-        
-              - name: setup SSH Directory
-                run: |
-                    mkdir -p ~/.ssh
-                    chmod 700 ~/.ssh
-        
-              - name: make private key file
-                run: |
-                    echo "${{secrets.EC2_PRIVATEKEY}}" > ~/.ssh/ec2_key
-                    chmod 600 ~/.ssh/ec2_key
-
-              - name: make private key file
-                run: |
-                   echo "${{secrets.EC2_PRIVATEKEY}}" > ~/.ssh/ec2_key
-                   chmod 600 ~/.ssh/ec2_key
-
-            - name: test SSH connect to ec2
-              run: |
-                 echo "SSH 연결 테스트 시작..."
-
-                 ssh -vvv StrictHostKeyChecking=no \
-                 -o "UserKnownHostsFile=/dev/null" \
-                 -i ~/.ssh/ec2_key -p 22 \ 
-                 ${{env.USER_NAME}}@${{env.HOSTNAME}} '
-
-                    java -jar ./massai_mara_park-0.0.1-SNAPSHOT.jar &
-                 '
-
-                 echo "SSH 연결 테스트 끝..."
-
-            - name: cleanup private key
-              if: always()
-              run: |
-                rm -f ~/.ssh/ec2.key
