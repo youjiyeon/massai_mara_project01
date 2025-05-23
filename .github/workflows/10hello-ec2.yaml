@@ -1,0 +1,43 @@
+name: Test EC2 Connection with GHA
+
+on:
+    workflow_dispatch
+
+jobs:
+    test0ec2-connect:
+        name: test ec2 connection
+        runs-on: ubuntu-22.04
+
+        steps:
+            - name: setup SSH Directory
+              run: |
+                mkdir -p ~/.ssh
+                chmod 700 ~/.ssh
+
+            - name: make private key file
+              run: |
+                echo "${{secrets.EC2_PRIVATEKEY}}" > ~/.ssh/ec2_key
+                chmod 600 ~/.ssh/ec2_key
+
+            - name: test SSH connect to ec2
+              env:
+                HOSTNAME: 3.35.138.117
+                USER_NAME: ubuntu
+              run: |
+                echo "SSH 연결 테스트 시작..."
+
+                ssh -vvv StrictHostKeyChecking=no \
+                -o "UserKnownHostsFile=/dev/null" \
+                -i ~/.ssh/ec2_.key -p 22 \ 
+                ${USER_NAME}@${HOSTNAME} '
+
+                    echo "현재 사용자: $(whoami)"
+                    echo "호스트명: $(hostname)"
+                '
+
+                echo "SSH 연결 테스트 끝..."
+
+            - name: cleanup private key
+              if: always()
+              run: |
+                rm -f ~/.ssh/ec2.key
