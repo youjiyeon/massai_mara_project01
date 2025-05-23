@@ -41,6 +41,8 @@ jobs:
 
             - name: upload README.md via SCP
               run: |
+                echo "Hello, EC2 SCP" > README.md
+                
                 scp -o StrictHostKeyChecking=no -o "UserKnownHostsFile=/dev/null" \
                 -i ~/.ssh/ec2_key -P 22 README.md \
                 ${{env.USER_NAME}}@${{env.HOSTNAME}}:~/README.md
