@@ -1,4 +1,4 @@
-name: massai mara park 01 compose dockerhub
+name: massai mara park 01 compose dockerhub multiplejobs
 
 on:
   workflow_dispatch
